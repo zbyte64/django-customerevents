@@ -13,10 +13,9 @@ class TrackingMiddleware(object):
                 self.tracker.identify(request.session.session_key)
 
     def process_response(self, request, response):
-        bound_trackers = self.tracker.flush()
-        backend_names = [bt.backend.name for bt in bound_trackers]
-        kwargs = self.tracker.to_pystruct()
-        send_tracking_to_backends.delay(backend_names, **kwargs)
-        #for bt in bound_trackers:
-            #bt.async_send()
+        if self.tracker.has_data():
+            bound_trackers = self.tracker.flush()
+            backend_names = [bt.backend.name for bt in bound_trackers]
+            kwargs = self.tracker.to_pystruct()
+            send_tracking_to_backends.delay(backend_names, **kwargs)
         return response

@@ -53,6 +53,11 @@ class Tracker(object):
         return
         assert self._closed is False, 'Tracker object is closed'
 
+    def has_data(self):
+        if not self.identity_id:
+            return False
+        return bool(self.aliases) or bool(self.events) or bool(self.identity)
+
     def identify(self, id, **properties):
         self._check_open()
         if self.identity_id is not None and id != self.identity_id:
