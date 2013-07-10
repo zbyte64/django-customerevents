@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .tracker import set_tracker
+from .tasks import send_tracking_to_backends
 
 
 class TrackingMiddleware(object):
@@ -13,6 +14,9 @@ class TrackingMiddleware(object):
 
     def process_response(self, request, response):
         bound_trackers = self.tracker.flush()
-        for bt in bound_trackers:
-            bt.async_send()
+        backend_names = [bt.backend.name for bt in bound_trackers]
+        kwargs = self.tracker.to_pystruct()
+        send_tracking_to_backends.delay(backend_names, **kwargs)
+        #for bt in bound_trackers:
+            #bt.async_send()
         return response

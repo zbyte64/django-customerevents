@@ -22,12 +22,11 @@ class GoogleAnalyticsBackend(BaseBackend):
         context.update(kwargs)
         return context
 
-    def send(self, identity, properties, aliases, events, http_meta=None):
+    def send(self, identity, properties, aliases, events, request_meta):
         site = get_current_site()
         tracker = Tracker(self.web_id, site.domain)
         visitor = Visitor()
-        if http_meta:
-            visitor.extract_from_server_meta(http_meta)
+        visitor.extract_from_server_meta(request_meta)
         visitor.unique_id = identity
         session = Session()
         for event_name, event_properties in events:

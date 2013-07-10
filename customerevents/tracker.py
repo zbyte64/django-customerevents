@@ -12,6 +12,7 @@ def get_tracker(request=None):
         if request:
             assert SESSION.tracker.request == request
         return SESSION.tracker
+
     return Tracker(get_backends(), request=request)
 
 
@@ -30,12 +31,19 @@ class Tracker(object):
         self.events = list()
         self._closed = False
 
+        self.request_meta = dict()
+        if self.request:
+            for key, value in request.META.items():
+                if isinstance(value, basestring):
+                    self.request_meta[key] = value
+
     def to_pystruct(self):
         return {
             'identity': self.identity_id,
             'properties': self.identity,
             'aliases': self.aliases,
             'events': self.events,
+            'request_meta': self.request_meta,
         }
 
     def close(self):

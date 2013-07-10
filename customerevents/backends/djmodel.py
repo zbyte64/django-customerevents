@@ -14,7 +14,7 @@ class ModelBackend(BaseBackend):
             customer = Customer.objects.get(aliases__customer=customer)
         return customer
 
-    def send(self, identity, properties, aliases, events):
+    def send(self, identity, properties, aliases, events, request_meta):
         customer = self.get_active_customer(identity, aliases)
 
         if aliases:

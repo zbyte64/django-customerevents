@@ -20,7 +20,7 @@ setup(
     zip_safe=False,
     include_package_data=True,
     #package_data={'': ['README.rst']},
-    install_requires=['django-jsonfield'],
+    #install_requires=['django-jsonfield'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

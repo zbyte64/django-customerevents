@@ -20,5 +20,5 @@ class BaseBackend(object):
         context = self.get_context(**context)
         return render_to_string(template, context)
 
-    def send(self, identity, properties, aliases, events):
+    def send(self, identity, properties, aliases, events, request_meta):
         raise NotImplementedError

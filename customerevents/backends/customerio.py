@@ -28,7 +28,7 @@ class CustomerIOBackend(BaseBackend):
             context['tracks'].append((event_name, json.dumps(event_properties)))
         return context
 
-    def send(self, identity, properties, aliases, events):
+    def send(self, identity, properties, aliases, events, request_meta):
         self.connection.identify(id=identity, **properties)
         for event_name, event_properties in events:
             self.connection.track(name=event_name, **event_properties)
