@@ -29,6 +29,9 @@ class CustomerIOBackend(BaseBackend):
         return context
 
     def send(self, identity, properties, aliases, events, request_meta):
+        if identity.startswith('session:'): #ignore anonymous sessions
+            return
         self.connection.identify(id=identity, **properties)
         for event_name, event_properties in events:
-            self.connection.track(name=event_name, **event_properties)
+            self.connection.track(customer_id=identity, name=event_name,
+                                  **event_properties)
