@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from ..models import Customer, Alias, Event
 from .base import BaseBackend
 
@@ -40,6 +41,14 @@ class ModelBackend(BaseBackend):
             customer.properties = merged_properties
 
         if properties:
+            if isinstance(customer.properties, basestring):
+                if customer.properties:
+                    try:
+                        customer.properties = json.dumps(customer.properties)
+                    except ValueError:
+                        customer.properties = dict()
+                else:
+                    customer.properties = dict()
             customer.properties.update(properties)
             customer.save()
 

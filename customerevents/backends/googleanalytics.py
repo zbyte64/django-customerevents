@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pyga.requests import Tracker, Event, Session, Visitor
 
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.models import Site
 
 from .base import BaseBackend
 
@@ -9,7 +9,7 @@ from .base import BaseBackend
 class GoogleAnalyticsBackend(BaseBackend):
     template_name = 'customerevents/google_analytics.html'
 
-    def __init__(self, WEB_ID, EVENT_CATEGORY='', **kwargs):
+    def __init__(self, WEB_ID, EVENT_CATEGORY='generic', **kwargs):
         self.web_id = WEB_ID
         self.event_category = EVENT_CATEGORY
         super(GoogleAnalyticsBackend, self).__init__(**kwargs)
@@ -23,11 +23,12 @@ class GoogleAnalyticsBackend(BaseBackend):
         return context
 
     def send(self, identity, properties, aliases, events, request_meta):
-        site = get_current_site()
-        tracker = Tracker(self.web_id, site.domain)
+        host_name = (request_meta.get('HTTP_HOST') or
+                     Site.objects.get_current().domain)
+        tracker = Tracker(self.web_id, host_name)
         visitor = Visitor()
         visitor.extract_from_server_meta(request_meta)
-        visitor.unique_id = identity
+        visitor.unique_id = abs(hash(identity)) >> 33
         session = Session()
         for event_name, event_properties in events:
             event = Event(category=self.event_category, action=event_name)
