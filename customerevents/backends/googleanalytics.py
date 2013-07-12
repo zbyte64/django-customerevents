@@ -27,8 +27,8 @@ class GoogleAnalyticsBackend(BaseBackend):
                      Site.objects.get_current().domain)
         tracker = Tracker(self.web_id, host_name)
         visitor = Visitor()
-        visitor.extract_from_server_meta(request_meta)
         visitor.unique_id = abs(hash(identity)) >> 33
+        visitor.extract_from_server_meta(request_meta)
         session = Session()
         for event_name, event_properties in events:
             event = Event(category=self.event_category, action=event_name)
