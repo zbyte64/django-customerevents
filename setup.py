@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from distutils.core import setup, find_packages
 
 DESCRIPTION = ''
 try:
     LONG_DESCRIPTION = open('README.rst').read()
-else:
+except:
     LONG_DESCRIPTION = DESCRIPTION
 
 setup(
@@ -12,7 +15,7 @@ setup(
     version='0.0.1',
     author='Jason Kraus',
     author_email='zbyte64@gmail.com',
-    packages=['customerevents'],
+    packages=find_packages(exclude=['tests']),
     url='https://github.com/zbyte64/django-post_office',
     license='MIT',
     description=DESCRIPTION,
