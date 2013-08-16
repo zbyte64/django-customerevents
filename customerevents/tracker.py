@@ -141,3 +141,12 @@ def identify(identity, **properties):
 def send_event(name, **properties):
     tracker = get_tracker()
     return tracker.event(name, **properties)
+
+
+def flush():
+    tracker = get_tracker()
+    bound_trackers = tracker.flush()
+    backend_names = [bt.backend.name for bt in bound_trackers]
+    kwargs = tracker.to_pystruct()
+    return send_tracking_to_backends.delay(backend_names, **kwargs)
+
