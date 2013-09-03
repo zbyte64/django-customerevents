@@ -1,7 +1,7 @@
 from threading import local
 
 from .backends import get_backends
-from .tasks import send_tracking_to_backend
+from .tasks import send_tracking_to_backend, send_tracking_to_backends
 
 
 SESSION = local()
