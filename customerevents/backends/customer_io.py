@@ -14,6 +14,8 @@ class CustomerIOBackend(BaseBackend):
         super(CustomerIOBackend, self).__init__(**kwargs)
 
     def get_context(self, identity, properties, events, **kwargs):
+        if identity.startswith('session:'):
+            raise NotImplementedError #anonymous sessions are not implemented
         context = {
             'identify': {
                 'id': identity

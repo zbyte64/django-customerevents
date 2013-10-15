@@ -6,6 +6,7 @@ from ..tracker import get_tracker
 
 register = template.Library()
 
+
 @register.simple_tag
 def render_events(*backends):
     tracker = get_tracker()
