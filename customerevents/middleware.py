@@ -2,7 +2,7 @@
 import datetime
 from django.utils.timezone import utc
 
-from .tracker import set_tracker
+from .tracker import set_tracker, unset_tracker
 from .tasks import send_tracking_to_backends
 
 
@@ -22,6 +22,7 @@ class TrackingMiddleware(object):
             backend_names = [bt.backend.name for bt in bound_trackers]
             kwargs = self.tracker.to_pystruct()
             send_tracking_to_backends.delay(backend_names, **kwargs)
+        unset_tracker()
         return response
 
     def get_user_properties(self, user):

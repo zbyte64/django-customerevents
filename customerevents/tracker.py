@@ -10,10 +10,12 @@ SESSION = local()
 def get_tracker(request=None):
     if hasattr(SESSION, 'tracker'):
         if request:
-            assert SESSION.tracker.request == request
+            if SESSION.tracker.request:
+                assert SESSION.tracker.request == request
+            else:
+                SESSION.tracker.set_request(request)
         return SESSION.tracker
-
-    return Tracker(get_backends(), request=request)
+    return set_tracker(request)
 
 
 def set_tracker(request=None):
@@ -21,16 +23,23 @@ def set_tracker(request=None):
     return SESSION.tracker
 
 
+def unset_tracker():
+    if hasattr(SESSION, 'tracker'):
+        delattr(SESSION, 'tracker')
+
+
 class Tracker(object):
     def __init__(self, backends, request=None):
         self.backends = backends
-        self.request = request
         self.identity = dict()
         self.identity_id = None
         self.aliases = set()
         self.events = list()
         self._closed = False
+        self.set_request(request)
 
+    def set_request(self, request):
+        self.request = request
         self.request_meta = dict()
         if self.request:
             for key, value in request.META.items():
@@ -145,8 +154,10 @@ def send_event(name, **properties):
 
 def flush():
     tracker = get_tracker()
+    if not tracker.has_data():
+        return
     bound_trackers = tracker.flush()
     backend_names = [bt.backend.name for bt in bound_trackers]
     kwargs = tracker.to_pystruct()
+    unset_tracker()
     return send_tracking_to_backends.delay(backend_names, **kwargs)
-
