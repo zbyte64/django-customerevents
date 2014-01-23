@@ -35,5 +35,7 @@ class CustomerIOBackend(BaseBackend):
             return
         self.connection.identify(id=identity, **properties)
         for event_name, event_properties in events:
-            self.connection.track(customer_id=identity, name=event_name,
-                                  **event_properties)
+            ep = dict(event_properties)
+            ep.update({'customer_id': identity,
+                       'name': event_name})
+            self.connection.track(**ep)

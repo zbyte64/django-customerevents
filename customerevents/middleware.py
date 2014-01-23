@@ -12,7 +12,7 @@ class TrackingMiddleware(object):
         if getattr(request, 'user'):
             if request.user.is_authenticated():
                 props = self.get_user_properties(request.user)
-                self.tracker.identify('userid:%s' % request.user.pk, **props)
+                self.tracker.identify('userid:%s' % request.user.pk, props)
             elif hasattr(request, 'session'):
                 self.tracker.identify('session:%s' % request.session.session_key)
 

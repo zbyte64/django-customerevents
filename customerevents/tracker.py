@@ -67,19 +67,20 @@ class Tracker(object):
             return False
         return bool(self.aliases) or bool(self.events) or bool(self.identity)
 
-    def identify(self, id, **properties):
+    def identify(self, id, properties=None):
         self._check_open()
         if self.identity_id is not None and id != self.identity_id:
             self.alias(self.identity_id, id)
         else:
             self.identity_id = id
-        self.identity.update(properties)
+        if properties:
+            self.identity.update(properties)
 
     def set(self, key, value):
         self._check_open()
         self.identity[key] = value
 
-    def event(self, name, **properties):
+    def event(self, name, properties):
         self._check_open()
         self.events.append((name, properties))
 
@@ -142,14 +143,14 @@ class BoundTracking(object):
         return send_tracking_to_backend.delay(**kwargs)
 
 
-def identify(identity, **properties):
+def identify(identity, _=None, **properties):
     tracker = get_tracker()
-    return tracker.identify(identity, **properties)
+    return tracker.identify(identity, _ or properties)
 
 
-def send_event(name, **properties):
+def send_event(name, _=None, **properties):
     tracker = get_tracker()
-    return tracker.event(name, **properties)
+    return tracker.event(name, _ or properties)
 
 
 def flush():
