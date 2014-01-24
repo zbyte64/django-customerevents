@@ -14,10 +14,13 @@
 </script>
 <script type="text/javascript">
   _kmq.push(["identify", "{{identify|safe}}"]);
-  {% for name, properties in record %}
-  _kmq.push(["record", "{{name}}", {{properties|safe}}]);
-  {% endfor %}
   {% if properties %}
   _kmq.push(["set", {{properties|safe}}]);
   {% endif %}
+  {% for alias in aliases %}
+  _kmq.push(["alias", "{{identify|safe}}", "{{alias|safe}}"]);
+  {% endfor %}
+  {% for name, properties in record %}
+  _kmq.push(["record", "{{name}}", {{properties|safe}}]);
+  {% endfor %}
 </script>
