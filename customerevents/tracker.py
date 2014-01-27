@@ -111,13 +111,17 @@ class BoundTracking(object):
     def _check_sent(self):
         assert self.sent is False, 'Tracker is already sent'
 
+    @property
+    def data(self):
+        return self.tracker.to_pystruct()
+
     def render(self):
         '''
         Returns html/js for inclusion in a client facing page
         '''
         self._check_sent()
         try:
-            ret = self.backend.render(self.tracker.to_pystruct())
+            ret = self.backend.render(self.data)
         except NotImplementedError:
             raise
         else:
@@ -130,7 +134,7 @@ class BoundTracking(object):
         '''
         self._check_sent()
         self.sent = True
-        return self.backend.send(**self.tracker.to_pystruct())
+        return self.backend.send(**self.data)
 
     def async_send(self):
         '''

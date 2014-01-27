@@ -36,4 +36,17 @@ def load_backend(path, **kwds):
     except AttributeError:
         raise ImproperlyConfigured(('Module "%s" does not define a '
                                     '"%s" class' % (mod_name, klass_name)))
-    return klass(**kwds)
+
+    filter_events = kwds.pop('FILTER_EVENTS', None)
+
+    def filters(f):
+        def func(*args, **kwargs):
+            if filter_events:
+                kwargs['events'] = filter(filter_events, kwargs['events'])
+            return f(*args, **kwargs)
+        return func
+
+    backend = klass(**kwds)
+    backend.get_context = filters(backend.get_context)
+    backend.send = filters(backend.send)
+    return backend

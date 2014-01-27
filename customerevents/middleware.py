@@ -13,7 +13,7 @@ class TrackingMiddleware(object):
             if request.user.is_authenticated():
                 props = self.get_user_properties(request.user)
                 self.tracker.identify('userid:%s' % request.user.pk, props)
-            elif hasattr(request, 'session'):
+            elif hasattr(request, 'session') and request.session.session_key:
                 self.tracker.identify('session:%s' % request.session.session_key)
 
     def process_response(self, request, response):

@@ -12,7 +12,7 @@ except:
 
 setup(
     name='django-customerevents',
-    version='0.0.7',
+    version='0.0.8',
     author='Jason Kraus',
     author_email='zbyte64@gmail.com',
     packages=find_packages(exclude=['tests']),
