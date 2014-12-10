@@ -21,7 +21,11 @@ class ModelBackend(BaseBackend):
     def get_active_customer(self, identity, aliases):
         customer, created = Customer.objects.get_or_create(identity=identity)
         if not customer.active:
-            customer = Customer.objects.get(aliases__customer=customer)
+            try:
+                customer = Customer.objects.get(aliases__customer=customer)
+            except Customer.DoesNotExist:
+                #TODO this shouldn't happen
+                pass
         return customer
 
     def send(self, identity, properties, aliases, events, request_meta):
